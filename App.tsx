@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Product, CartItem, ViewState, Country } from './types';
 import { PHONE_MODELS, COUNTRIES } from './constants';
-import { ShoppingCart, ArrowLeft, CheckCircle, Smartphone } from 'lucide-react';
+import { ShoppingCart, ArrowLeft, CheckCircle, Smartphone, Globe, ShieldCheck, Truck, CreditCard } from 'lucide-react';
 import CountrySelector from './components/CountrySelector';
 import Shop from './components/Shop';
 import Checkout from './components/Checkout';
@@ -69,40 +69,43 @@ const App: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen flex flex-col font-sans text-gray-800">
+        <div className="min-h-screen flex flex-col font-sans text-gray-800 bg-gray-50">
             {/* Header */}
             {view !== 'COUNTRY_SELECT' && (
                 <header className="bg-brand-green text-white p-6 shadow-lg rounded-b-[25px] sticky top-0 z-50">
                     <div className="max-w-6xl mx-auto flex justify-between items-center">
-                        <div>
+                        <div className="cursor-pointer" onClick={() => setView('SHOP')}>
                             <h1 className="text-2xl font-bold tracking-wider flex items-center gap-2">
                                 <Smartphone size={28} />
                                 SmartShop <span className="text-brand-orange">Intl.</span>
                             </h1>
                             {selectedCountry && (
-                                <p className="text-xs text-brand-light mt-1 opacity-90">
+                                <p className="text-xs text-brand-light mt-1 opacity-90 flex items-center gap-1">
+                                    <Globe size={12} />
                                     Shopping in {selectedCountry.name} ({selectedCountry.currency})
                                 </p>
                             )}
                         </div>
-                        {view === 'SHOP' && cart.length > 0 && (
-                             <button 
-                                onClick={() => setView('CHECKOUT')}
-                                className="bg-brand-orange hover:bg-white hover:text-brand-green text-white font-bold py-2 px-4 rounded-full transition shadow-md flex items-center gap-2"
-                            >
-                                <ShoppingCart size={20} />
-                                <span>{getCurrencySymbol()}{calculateTotal().toLocaleString()}</span>
-                            </button>
-                        )}
-                        {view === 'CHECKOUT' && (
-                             <button 
-                                onClick={() => setView('SHOP')}
-                                className="bg-white/20 hover:bg-white/30 text-white font-bold py-2 px-4 rounded-full transition flex items-center gap-2"
-                            >
-                                <ArrowLeft size={20} />
-                                Back
-                            </button>
-                        )}
+                        <div className="flex items-center gap-4">
+                            {view === 'SHOP' && cart.length > 0 && (
+                                <button 
+                                    onClick={() => setView('CHECKOUT')}
+                                    className="bg-brand-orange hover:bg-white hover:text-brand-green text-white font-bold py-2 px-4 rounded-full transition shadow-md flex items-center gap-2"
+                                >
+                                    <ShoppingCart size={20} />
+                                    <span>{getCurrencySymbol()}{calculateTotal().toLocaleString()}</span>
+                                </button>
+                            )}
+                            {view === 'CHECKOUT' && (
+                                <button 
+                                    onClick={() => setView('SHOP')}
+                                    className="bg-white/20 hover:bg-white/30 text-white font-bold py-2 px-4 rounded-full transition flex items-center gap-2"
+                                >
+                                    <ArrowLeft size={20} />
+                                    Back
+                                </button>
+                            )}
+                        </div>
                     </div>
                 </header>
             )}
@@ -157,13 +160,64 @@ const App: React.FC = () => {
                 )}
             </main>
 
+            {/* Footer - Only show when not in country select */}
+            {view !== 'COUNTRY_SELECT' && (
+                <footer className="bg-gray-900 text-gray-300 py-12 px-4 mt-12">
+                    <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                        <div>
+                            <h3 className="text-white font-bold text-lg mb-4 flex items-center gap-2">
+                                <Smartphone size={20} /> SmartShop Intl.
+                            </h3>
+                            <p className="text-sm text-gray-400">
+                                The premium destination for international smartphone shopping. 
+                                Localized pricing, global delivery.
+                            </p>
+                        </div>
+                        <div>
+                            <h4 className="text-white font-bold mb-4">Customer Care</h4>
+                            <ul className="space-y-2 text-sm">
+                                <li className="hover:text-brand-orange cursor-pointer">Order Tracking</li>
+                                <li className="hover:text-brand-orange cursor-pointer">Shipping Rates</li>
+                                <li className="hover:text-brand-orange cursor-pointer">Returns & Warranty</li>
+                                <li className="hover:text-brand-orange cursor-pointer">Contact Support</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 className="text-white font-bold mb-4">Why Choose Us</h4>
+                            <ul className="space-y-3 text-sm">
+                                <li className="flex items-center gap-2">
+                                    <ShieldCheck size={16} className="text-brand-green" />
+                                    Secure SSL Payments
+                                </li>
+                                <li className="flex items-center gap-2">
+                                    <Globe size={16} className="text-brand-green" />
+                                    International Warranty
+                                </li>
+                                <li className="flex items-center gap-2">
+                                    <Truck size={16} className="text-brand-green" />
+                                    Fast Global Shipping
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div className="max-w-6xl mx-auto border-t border-gray-800 pt-8 text-center text-xs text-gray-500 flex flex-col md:flex-row justify-between items-center gap-4">
+                        <p>&copy; {new Date().getFullYear()} SmartShop International. All rights reserved.</p>
+                        <div className="flex gap-4">
+                            <CreditCard size={20} />
+                            <span className="font-mono">VISA</span>
+                            <span className="font-mono">Mastercard</span>
+                        </div>
+                    </div>
+                </footer>
+            )}
+
             {/* Cart Bar (Shop View Only) */}
             {view === 'SHOP' && cart.length > 0 && (
-                <div className="fixed bottom-0 left-0 w-full bg-gradient-to-r from-[#fffbe9] via-[#eaffea] to-[#fffbe9] border-t-2 border-brand-green/10 shadow-[0_-5px_20px_rgba(18,119,12,0.15)] p-4 z-40 animate-slide-up">
+                <div className="fixed bottom-0 left-0 w-full bg-white border-t border-brand-green/20 shadow-[0_-5px_25px_rgba(0,0,0,0.1)] p-4 z-40 animate-slide-up">
                     <div className="max-w-6xl mx-auto flex justify-between items-center">
                         <div className="flex flex-col">
-                            <span className="text-brand-green font-bold text-lg tracking-wide">
-                                Total: {getCurrencySymbol()}{calculateTotal().toLocaleString()}
+                            <span className="text-gray-800 font-bold text-lg">
+                                Total: <span className="text-brand-green">{getCurrencySymbol()}{calculateTotal().toLocaleString()}</span>
                             </span>
                             <span className="text-gray-500 text-sm hidden sm:block truncate max-w-md">
                                 {cart.map(i => `${i.qty}x ${i.brand} ${i.model}`).join(', ')}
@@ -171,9 +225,9 @@ const App: React.FC = () => {
                         </div>
                         <button 
                             onClick={() => setView('CHECKOUT')}
-                            className="bg-brand-orange hover:bg-brand-green text-white font-bold py-3 px-8 rounded-lg shadow-lg transition-colors duration-200"
+                            className="bg-brand-green hover:bg-brand-orange text-white font-bold py-3 px-8 rounded-xl shadow-lg transition-colors duration-200"
                         >
-                            Checkout
+                            Secure Checkout
                         </button>
                     </div>
                 </div>
