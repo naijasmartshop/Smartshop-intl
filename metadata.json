@@ -1,4 +1,5 @@
 {
-  "name": "SmartShop International",
-  "description": "Premium international smartphone store with dynamic currency and localized pricing."
+  "name": "Smart Shop Int'l",
+  "description": "Premium international smartphone store with dynamic currency and localized pricing.",
+  "requestFramePermissions": []
 }
